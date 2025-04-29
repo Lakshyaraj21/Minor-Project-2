@@ -1,0 +1,214 @@
+.swipe-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.swipe-area {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.swipe-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.swipe-buttons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.swipe-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 45%;
+  max-width: 180px;
+  font-family: var(--font-family-serif);
+}
+
+.swipe-button.like {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.swipe-button.like:hover:not(:disabled) {
+  background-color: #44652f;
+  border-color: #44652f;
+}
+
+.swipe-button.dislike {
+  background-color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.swipe-button.dislike:hover:not(:disabled) {
+  background-color: #8c2929;
+  border-color: #8c2929;
+}
+
+.swipe-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.swipe-button svg {
+  margin: 0 var(--spacing-xs);
+}
+
+.swipe-instructions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: var(--spacing-sm);
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.instruction-item {
+  display: flex;
+  align-items: center;
+}
+
+.swipe-arrow {
+  font-size: 1.5rem;
+  margin: 0 var(--spacing-xs);
+}
+
+.swipe-arrow.left {
+  color: var(--color-error);
+}
+
+.swipe-arrow.right {
+  color: var(--color-success);
+}
+
+.swipe-info {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.no-books {
+  text-align: center;
+  background-color: var(--color-paper);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url('https://images.pexels.com/photos/164005/pexels-photo-164005.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.no-books::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(252, 248, 240, 0.85);
+  border-radius: var(--border-radius-md);
+}
+
+.no-books h2, .no-books p {
+  position: relative;
+  z-index: 1;
+}
+
+.no-books h2 {
+  font-family: var(--font-family-serif);
+  color: var(--color-leather-dark);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Animation for the swipe card */
+.swipe-card.swiping-right .book-card {
+  animation: pageTurn 0.5s forwards;
+}
+
+.swipe-card.swiping-left .book-card {
+  animation: pageTear 0.5s forwards;
+}
+
+@keyframes pageTurn {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes pageTear {
+  0% {
+    transform: rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: rotate(-5deg) translate(-10%, 2%);
+    filter: brightness(0.9);
+    clip-path: polygon(0% 0%, 80% 0%, 90% 100%, 0% 100%);
+  }
+  100% {
+    transform: rotate(-15deg) translate(-30%, 5%);
+    filter: brightness(0.7);
+    clip-path: polygon(0% 0%, 30% 0%, 60% 100%, 0% 100%);
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .swipe-area {
+    height: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .swipe-area {
+    height: 450px;
+  }
+  
+  .swipe-buttons {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .swipe-button {
+    font-size: 0.9rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .swipe-instructions {
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,162 @@
+:root {
+  /* Color variables */
+  --color-paper: #f8f3e6;
+  --color-paper-dark: #e6dcc8;
+  --color-leather: #8c4a2e;
+  --color-leather-dark: #5e2f19;
+  --color-text-primary: #2a2118;
+  --color-text-secondary: #51453a;
+  --color-accent: #c58940;
+  --color-success: #50723c;
+  --color-warning: #cd7e31;
+  --color-error: #a83232;
+  
+  /* Neutral tones */
+  --color-neutral-100: #f5f0e6;
+  --color-neutral-200: #e6dcc8;
+  --color-neutral-300: #cfc0a9;
+  --color-neutral-400: #b3a18a;
+  --color-neutral-500: #95826b;
+  --color-neutral-600: #75654f;
+  --color-neutral-700: #574b3a;
+  --color-neutral-800: #3a3126;
+  --color-neutral-900: #1e1911;
+  
+  /* Typography */
+  --font-family-serif: 'Playfair Display', Georgia, serif;
+  --font-family-sans: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+  
+  /* Spacing (8px system) */
+  --spacing-xs: 0.5rem;  /* 8px */
+  --spacing-sm: 1rem;    /* 16px */
+  --spacing-md: 1.5rem;  /* 24px */
+  --spacing-lg: 2rem;    /* 32px */
+  --spacing-xl: 3rem;    /* 48px */
+  
+  /* Borders */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 1rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.14);
+  
+  /* Transitions */
+  --transition-fast: 200ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+  
+  font-family: var(--font-family-sans);
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: var(--color-text-primary);
+  background-color: var(--color-paper);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-paper);
+  background-image: url('https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-blend-mode: overlay;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-serif);
+  line-height: 1.2;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+p {
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.5;
+}
+
+a {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: inherit;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-leather);
+}
+
+button {
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-leather);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--color-leather);
+  color: var(--color-paper);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+button:hover {
+  background-color: var(--color-leather-dark);
+  border-color: var(--color-leather-dark);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+}
