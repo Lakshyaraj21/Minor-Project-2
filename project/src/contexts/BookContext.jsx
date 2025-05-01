@@ -6,11 +6,10 @@ const BookContext = createContext()
 
 // Context provider component
 export function BookProvider({ children }) {
-  // State for liked books
   const [likedBooks, setLikedBooks] = useState([])
-  // State for the current books to display
   const [currentBooks, setCurrentBooks] = useState([])
-  
+  const [seenBookIds, setSeenBookIds] = useState(new Set())
+
   // Load liked books from localStorage on initial render
   useEffect(() => {
     const savedLikedBooks = localStorage.getItem('likedBooks')
@@ -21,72 +20,73 @@ export function BookProvider({ children }) {
         console.error('Error parsing liked books from localStorage:', error)
       }
     }
-    
-    // Initialize current books
-    setCurrentBooks(bookData.slice(0, 5))
+
+    // Initialize current books and mark them as seen
+    const initialBooks = bookData.slice(0, 5)
+    setCurrentBooks(initialBooks)
+    setSeenBookIds(new Set(initialBooks.map(book => book.id)))
   }, [])
-  
+
   // Save liked books to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('likedBooks', JSON.stringify(likedBooks))
   }, [likedBooks])
-  
-  // Function to handle liking a book
+
+  // Like a book
   const likeBook = (book) => {
-    if (!likedBooks.some(likedBook => likedBook.id === book.id)) {
-      setLikedBooks([...likedBooks, book])
+    if (!likedBooks.some(liked => liked.id === book.id)) {
+      setLikedBooks(prev => [...prev, book])
     }
   }
-  
-  // Function to remove a book from liked books
+
+  // Unlike a book
   const unlikeBook = (bookId) => {
-    setLikedBooks(likedBooks.filter(book => book.id !== bookId))
+    setLikedBooks(prev => prev.filter(book => book.id !== bookId))
   }
-  
-  // Function to load more books
+
+  // Load more books, avoiding seen or liked
   const loadMoreBooks = () => {
-    // Get the IDs of books already seen or liked
-    const existingBookIds = new Set([
-      ...currentBooks.map(b => b.id),
-      ...likedBooks.map(b => b.id)
+    const excludedIds = new Set([
+      ...seenBookIds,
+      ...likedBooks.map(b => b.id),
+      ...currentBooks.map(b => b.id)
     ])
-    
-    // Find books that haven't been seen yet
-    const newBooks = bookData.filter(book => !existingBookIds.has(book.id))
-    
-    // Add up to 5 new books to the current stack
+
+    const newBooks = bookData.filter(book => !excludedIds.has(book.id))
     const booksToAdd = newBooks.slice(0, 5)
-    
+
     if (booksToAdd.length > 0) {
-      setCurrentBooks(prevBooks => [...prevBooks, ...booksToAdd])
+      setCurrentBooks(prev => [...prev, ...booksToAdd])
+      setSeenBookIds(prev => {
+        const updated = new Set(prev)
+        booksToAdd.forEach(book => updated.add(book.id))
+        return updated
+      })
     } else {
-      // If we've shown all books, start over with the first few (excluding liked ones)
+      // All books used, restart (excluding liked books)
       const restartBooks = bookData
         .filter(book => !likedBooks.some(liked => liked.id === book.id))
         .slice(0, 5)
-      
+
       setCurrentBooks(restartBooks)
+      setSeenBookIds(new Set(restartBooks.map(book => book.id)))
     }
   }
-  
-  // Remove a book from current books (when swiped)
+
+  // Remove a swiped book and maybe load more
   const removeBook = (bookId) => {
-    setCurrentBooks(prevBooks => {
-      const updated = prevBooks.filter(book => book.id !== bookId);
-  
-      // Load more books *after* state update
+    setCurrentBooks(prev => {
+      const updated = prev.filter(book => book.id !== bookId)
+      setSeenBookIds(prevSeen => new Set(prevSeen).add(bookId))
+
       if (updated.length <= 2) {
-        setTimeout(() => loadMoreBooks(), 0);
+        setTimeout(loadMoreBooks, 0)
       }
-  
-      return updated;
-    });
-  };
-  
-  
-  
-  
-  // Context value
+
+      return updated
+    })
+  }
+
   const value = {
     likedBooks,
     currentBooks,
@@ -95,7 +95,7 @@ export function BookProvider({ children }) {
     removeBook,
     loadMoreBooks
   }
-  
+
   return (
     <BookContext.Provider value={value}>
       {children}
@@ -103,7 +103,7 @@ export function BookProvider({ children }) {
   )
 }
 
-// Custom hook to use the book context
+// Custom hook
 export function useBooks() {
   return useContext(BookContext)
 }

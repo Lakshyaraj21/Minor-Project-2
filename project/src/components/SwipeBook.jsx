@@ -8,37 +8,44 @@ import '../styles/SwipeBook.css'
 
 function SwipeBook() {
   const { currentBooks, likeBook, removeBook } = useBooks()
-  
+
   const [swipeDirection, setSwipeDirection] = useState(null)
   const [lastDirection, setLastDirection] = useState('')
   const [isAnimating, setIsAnimating] = useState(false)
   const cardRefs = useRef([])
 
+  // 🆕 Prevent spamming swipes
+  const isProcessingRef = useRef(false)
+
   const emptyAnimation = useSpring({
     opacity: currentBooks.length === 0 ? 1 : 0,
     transform: currentBooks.length === 0 ? 'translateY(0px)' : 'translateY(20px)',
   })
-  
+
   const onSwipe = (direction, book) => {
+    if (isProcessingRef.current) return
+    isProcessingRef.current = true
+
     setLastDirection(direction)
     setSwipeDirection(direction)
     setIsAnimating(true)
-    
+
     setTimeout(() => {
       if (direction === 'right') likeBook(book)
       removeBook(book.id)
+
       setIsAnimating(false)
       setSwipeDirection(null)
+      isProcessingRef.current = false
     }, 500)
   }
-  
+
   const swipe = (direction) => {
-    if (currentBooks.length === 0 || isAnimating) return
-    // swipe the topmost card
+    if (currentBooks.length === 0 || isAnimating || isProcessingRef.current) return
     const topIndex = currentBooks.length - 1
     cardRefs.current[topIndex]?.swipe(direction)
   }
-  
+
   return (
     <div className="swipe-container">
       <div className="swipe-area">
@@ -49,11 +56,7 @@ function SwipeBook() {
               ref={ref => (cardRefs.current[index] = ref)}
               onSwipe={dir => onSwipe(dir, book)}
               preventSwipe={['up', 'down']}
-              className={`
-                swipe-card
-                ${swipeDirection === 'left'  ? 'swiping-left'  : ''}
-                ${swipeDirection === 'right' ? 'swiping-right' : ''}
-              `}
+              className={`swipe-card ${swipeDirection === 'left' ? 'swiping-left' : ''} ${swipeDirection === 'right' ? 'swiping-right' : ''}`}
             >
               <BookCard book={book} isAnimating={isAnimating} />
             </TinderCard>
@@ -71,7 +74,7 @@ function SwipeBook() {
           </div>
         )}
       </div>
-      
+
       <div className="swipe-buttons">
         <button
           className="swipe-button dislike"
@@ -88,7 +91,7 @@ function SwipeBook() {
           <span>Like</span><FaArrowRight />
         </button>
       </div>
-      
+
       <div className="swipe-instructions">
         <div className="instruction-item">
           <div className="swipe-arrow left">←</div>
