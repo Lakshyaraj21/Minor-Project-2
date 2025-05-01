@@ -71,13 +71,20 @@ export function BookProvider({ children }) {
   
   // Remove a book from current books (when swiped)
   const removeBook = (bookId) => {
-    setCurrentBooks(prevBooks => prevBooks.filter(book => book.id !== bookId))
-    
-    // If we're running low on books, load more
-    if (currentBooks.length <= 2) {
-      loadMoreBooks()
-    }
-  }
+    setCurrentBooks(prevBooks => {
+      const updated = prevBooks.filter(book => book.id !== bookId);
+  
+      // Load more books *after* state update
+      if (updated.length <= 2) {
+        setTimeout(() => loadMoreBooks(), 0);
+      }
+  
+      return updated;
+    });
+  };
+  
+  
+  
   
   // Context value
   const value = {
